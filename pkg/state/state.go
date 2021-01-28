@@ -2978,8 +2978,11 @@ func (st *HelmState) Reverse() {
 	}
 }
 
-func (st *HelmState) getOCIChart(release *ReleaseSpec, tempDir string, helm helmexec.Interface) (bool, string, error) {
+var m = &sync.Mutex{}
 
+func (st *HelmState) getOCIChart(release *ReleaseSpec, tempDir string, helm helmexec.Interface) (bool, string, error) {
+	m.Lock()
+	defer m.Unlock()
 	isOCI := false
 
 	repo, name := st.GetRepositoryAndNameFromChartName(release.Chart)
